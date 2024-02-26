@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Play Jeopardy!</title>
+  <style>
+    @font-face {
+      src: url(../Jeopardy/KorinnaNormal.ttf);
+    }
+    body {
+      background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/c3f34d4f-0676-4857-9fd9-cc10807708af/dcwx9jx-64f09dc2-abff-4aae-9787-153f19b93f27.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2MzZjM0ZDRmLTA2NzYtNDg1Ny05ZmQ5LWNjMTA4MDc3MDhhZlwvZGN3eDlqeC02NGYwOWRjMi1hYmZmLTRhYWUtOTc4Ny0xNTNmMTliOTNmMjcucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.ZT8FY-fxjQdFNAjxR29Yykr_tNWoF3BsXguL8LYQahI');
+      font-family: KorinnaNormal;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    th, td {
+      border: 3px solid #D69F4C;
+      padding: 10px;
+      text-align: center;
+      color: #D69F4C;
+    }
+    th {
+      background-color: #333;
+      color: #D69F4C;
+      font-weight: bold;
+    }
+    td:hover {
+      background-color: #ffffff;
+      color: #16108e;
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .show-modal {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    #hello{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #D69F4C;
+  }
+  #second{
+    position: absolute;
+    top: 10px;
+    color: #D69F4C;
+  }
+
+  #submit-answer {
+      background-color: #D69F4C;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #submit-answer:hover {
+      background-color: #985f25; 
+    }
+
+    #user-answer {
+      padding: 10px;
+      border: 1px solid #D69F4C;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 100%; 
+      box-sizing: border-box; 
+      margin-bottom: 10px; 
+    }
+  </style>
+</head>
+<body>
+  <svg viewbox="0 0 100 20">
+    <defs>
+      <linearGradient id="gradient">
+        <stop color="#000"/>
+      </linearGradient>
+      <pattern id="wave" x="0" y="1.7" width="100%" height="100%" patternUnits="userSpaceOnUse">
+        <path id="wavePath" d="M-40 9 Q-30 7 -20 9 T0 9 T20 9 T40 9 T60 9 T80 9 T100 9 T120 9 V20 H-40z" fill="url(#gradient)"> 
+          <animateTransform
+              attributeName="transform"
+              begin="0s"
+              dur="1.5s"
+              type="translate"
+              from="0,0"
+              to="40,0"
+              repeatCount="indefinite" />
+        </path>
+      </pattern>
+    </defs>
+    <text text-anchor="middle" x="50" y="15" font-size="7" fill="url(#wave)" fill-opacity="1">JEOPARDY</text>
+    <text text-anchor="middle" x="50" y="15" font-size="7" fill="#D69F4C" fill-opacity="0.55">JEOPARDY</text>
+  </svg>
+  <h2 id="hello"> Total: $</h2>
+  <h2 id="second"> Name: </h2>
+
+  <table id="jeopardyTable">
+    <thead>
+      <tr>
+        <th>Data Structures</th>
+        <th>&nbsp&nbsp&nbspHardware&nbsp&nbsp&nbsp</th>
+        <th>&nbsp&nbspTech Trivia&nbsp&nbsp</th>
+        <th>&nbsp&nbsp&nbsp&nbsp&nbspFAANG&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+        <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspA.I.&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr> <!-- Kevin and Naythan finish the questions that I've left 'TBD' -->
+        <td data-question="$100: This is a data type that stores multiple characters." data-answer="String" id="q1_1" data-cash-amount="100" already-answered="false">$100</td>
+        <td data-question="$100: This piece of hardware renders the graphical elements and can be used effectively for parallel computing." data-answer="GPU" id="q1_2" data-cash-amount="100" already-answered="false">$100</td>
+        <td data-question="$100: Who is the CEO of Tesla?" data-answer="Elon Musk" id="q1_3" data-cash-amount="100" already-answered="false">$100</td>
+        <td data-question="$100: This IPhone Model was never made." data-answer="Iphone 9" id="q1_4" data-cash-amount="100" already-answered="false">$100</td>
+        <td data-question="$100: This is the most popular AI language model." data-answer="Chat GPT" id="q1_5" data-cash-amount="100" already-answered="false">$100</td>
+      </tr>
+      <tr>
+        <td data-question="$200: This data structure consists of multiple items of the same data type." data-answer="Array" id="q2_1" data-cash-amount="200" already-answered="false">$200</td>
+        <td data-question="$200: What component of a computer is responsible for performing arithmetic and logical operations?" data-answer="CPU" id="q2_2" data-cash-amount="200" already-answered="false">$200</td>
+        <td data-question="$200: This programming language is the most commonly used language." data-answer="JavaScript" id="q2_3" data-cash-amount="200" already-answered="false">$200</td>
+        <td data-question="$200: This video-streaming company implemented ads in 2024." data-answer="Netflix" id="q2_4" data-cash-amount="200" already-answered="false">$200</td>
+        <td data-question="$200: Google’s Bard was rebranded to this AI Model." data-answer="Gemini" id="q2_5" data-cash-amount="200" already-answered="false">$200</td>
+      </tr>
+      <tr>
+        <td data-question="$300: This data structure is last in first out." data-answer="Stack" id="q3_1" data-cash-amount="300" already-answered="false">$300</td>
+        <td data-question="$300: What is used to temporarily store data that the CPU needs to access quickly?" data-answer="RAM" id="q3_2" data-cash-amount="300" already-answered="false">$300</td>
+        <td data-question="$300: The first ever web browser was renamed to what?" data-answer="Nexus" id="q3_3" data-cash-amount="300" already-answered="false">$300</td>
+        <td data-question="$300: This major company bought a stake in Facebook in 2007." data-answer="Microsoft" id="q3_4" data-cash-amount="300" already-answered="false">$300</td>
+        <td data-question="$300: This AI company was previously owned by Elon Musk." data-answer="Open AI" id="q3_5" data-cash-amount="300" already-answered="false">$300</td>
+      </tr>
+      <tr>
+        <td data-question="$400: This data structure has elements that contain data and a reference to the next node in the sequence." data-answer="Linked List" id="q4_1" data-cash-amount="400" already-answered="false">$400</td>
+        <td data-question="$400: What connects all the components of a computer, allowing them to communicate with each other?" data-answer="motherboard" id="q4_2" data-cash-amount="400" already-answered="false">$400</td>
+        <td data-question="$400: Who is known as the father of modern computer science?" data-answer="Alan Turing" id="q4_3" data-cash-amount="400" already-answered="false">$400</td>
+        <td data-question="$400: Steve Jobs wore this on his first Apple showcase." data-answer="Black Turtleneck" id="q4_4" data-cash-amount="400" already-answered="false">$400</td>
+        <td data-question="$400: This is the method of teaching AI to interpret results." data-answer="Machine Learning" id="q4_5" data-cash-amount="400" already-answered="false">$400</td>
+      </tr>
+      <tr>
+        <td data-question="$500: This data structure is used in sorting algorithms, where elements below each node on the right are greater, and elements below each node on the left are less than." data-answer="Binary Search Tree" id="q5_1" data-cash-amount="500" already-answered="false">$500</td>
+        <td data-question="$500: Which law states the number of transistors on a microchip doubles approximately every two years, leading to exponential growth in computing power?" data-answer="Moore's Law" id="q5_2" data-cash-amount="500" already-answered="false">$500</td>
+        <td data-question="$500: What HTTP response code is displayed indicating that the client was able to communicate with the server, but the server could not find what was requested?" data-answer="404" id="q5_3" data-cash-amount="500" already-answered="false">$500</td>
+        <td data-question="$500: What was the IPO price of Facebook when it went public in 2012? (per share)" data-answer="$38" id="q5_4" data-cash-amount="500" already-answered="false">$500</td>
+        <td data-question="$500: What class of artificial intelligence algorithms used in unsupervised machine learning?" data-answer="GANs" id="q5_5" data-cash-amount="500" already-answered="false">$500</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <div id="countdown"></div>
+      <p id="modal-question"></p>
+      <input type="text" id="user-answer" placeholder="What is...">
+      <button class="submit-button" id="submit-answer">Submit</button>
+    </div>
+  </div>
+  <script>
+
+    const playerName = prompt("Please enter your name:");
+    const nameDisplay = document.getElementById('second');
+    nameDisplay.textContent = `Name: ${playerName}`;
+    const cells = document.querySelectorAll('#jeopardyTable td');
+    const modal = document.getElementById('myModal');
+    const modalQuestion = document.getElementById('modal-question');
+    const userAnswerInput = document.getElementById('user-answer');
+    const submitButton = document.getElementById('submit-answer');
+    const totalMoneyDisplay = document.getElementById('hello');
+
+    let totalMoney = 0;
+    totalMoneyDisplay.textContent = `Total: $${totalMoney}`;
+    let remainingQuestions = cells.length;
+
+
+    cells.forEach(cell => {
+      cell.addEventListener('click', () => {
+        if (remainingQuestions > 0) {
+          const question = cell.getAttribute('data-question');
+          const answer = cell.getAttribute('data-answer');
+          const cashAmount = parseInt(cell.getAttribute('data-cash-amount'));
+          modalQuestion.textContent = question;
+          modal.setAttribute('data-correct-answer', answer);
+          modal.setAttribute('data-target-cell', cell.id);
+          modal.setAttribute('data-cash-amount', cashAmount);
+          modal.classList.add('show-modal');
+        } else {
+          endGame();
+        }
+      });
+    });
+
+    function isInsideModal(element) {
+      return modal.contains(element);
+    }
+
+    submitButton.addEventListener('click', checkAnswer);
+
+    function checkAnswer() {
+      const userAnswer = userAnswerInput.value.trim().toLowerCase();
+      const correctAnswer = modal.getAttribute('data-correct-answer').toLowerCase(); 
+      const cashAmount = parseInt(modal.getAttribute('data-cash-amount'));
+      const targetCellId = modal.getAttribute('data-target-cell');
+      const targetCell = document.getElementById(targetCellId);
+
+      if (userAnswer === correctAnswer) {
+        alert(`Correct answer! ${playerName}, you won $${cashAmount}!`);
+        totalMoney += cashAmount; 
+        totalMoneyDisplay.textContent = `Total: $${totalMoney}`;
+        remainingQuestions--;
+        modal.classList.remove('show-modal');
+        userAnswerInput.value = '';
+        targetCell.style.color = 'green';
+        targetCell.style.backgroundColor = 'black';
+
+        const flashInterval = setInterval(() => {
+        targetCell.style.backgroundColor = targetCell.style.backgroundColor === 'green' ? 'black' : 'green';
+      }, 200); 
+
+        setTimeout(() => {
+        clearInterval(flashInterval); 
+        targetCell.style.backgroundColor = 'black';
+      }, 2000);
+
+      } else {
+        alert(`Incorrect answer. ${playerName}, the correct answer was "${correctAnswer}"`);
+        totalMoney -= cashAmount; 
+        totalMoneyDisplay.textContent = `Total: $${totalMoney}`;
+        remainingQuestions--;
+        modal.classList.remove('show-modal');
+        userAnswerInput.value = '';
+        targetCell.style.color = 'red';
+        targetCell.style.backgroundColor = 'red';
+
+        const flashInterval = setInterval(() => {
+        targetCell.style.backgroundColor = targetCell.style.backgroundColor === 'yellow' ? 'red' : 'yellow';
+      }, 200); 
+
+        setTimeout(() => {
+        clearInterval(flashInterval); 
+        targetCell.style.backgroundColor = 'black';
+      }, 2000);
+      }
+    }
+
+    function endGame() {
+      if(totalMoney >= 0) {
+        alert(`Congratulations ${playerName}! You have answered all the questions! Your total winnings: $${totalMoney}`);
+      } else {
+        alert(`Congratulations ${playerName}! You have answered all the questions! But you lost: $${-1 * totalMoney}`);
+      }
+      window.location.href = 'LoadingPage.html';
+    }
+
+    var timeleft = 400;
+    var ayush = true;
+    var downloadTimer = setInterval(function(){
+      if(timeleft <= 0 && ayush == true){
+        document.getElementById("countdown").innerHTML = "Finished";
+        modal.classList.remove('show-modal');
+        endGame();
+
+      } else {
+        document.getElementById("countdown").innerHTML = timeleft + " seconds remaining to finish board!";
+      }
+      timeleft -= 1;
+    }, 1000);
+  </script>
+  
+</body>
+</html>
